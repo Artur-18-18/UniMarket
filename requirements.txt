@@ -6,3 +6,4 @@ requests
 aiofiles
 websockets
 pytest
+email-validator
