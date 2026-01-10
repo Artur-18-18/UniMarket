@@ -8,3 +8,5 @@ websockets
 pytest
 email-validator
 httpx
+passlib[bcrypt]
+python-jose[cryptography]
