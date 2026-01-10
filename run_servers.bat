@@ -1,0 +1,6 @@
+@echo off
+echo Запуск Python сервера (API + База данных)...
+start "UniMarket Python API" cmd /k "uvicorn app.main:app --reload"
+
+echo Запуск Node.js сервера (Чат)...
+start "UniMarket Node Chat" cmd /k "node app/server.js"

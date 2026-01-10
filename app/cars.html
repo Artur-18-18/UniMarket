@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniMarket - Панель управления</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="assets/css/style-prefix.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sidebar-form { padding: 20px 0; border-top: 1px solid var(--cultured); margin-top: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: var(--sonic-silver); margin-bottom: 5px; }
+        .btn-submit { background: #ff6b6b; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-submit:hover { background: #ff4747; }
+        .pKZT { color: #2b786a; font-weight: bold; font-size: 14px; }
+        .menu-title-flex { display: flex; align-items: center; gap: 10px; }
+        .menu-title-flex ion-icon { font-size: 18px; color: var(--salmon-pink); }
+        .sidebar-accordion-menu { width: 100%; background: none; border: none; text-align: left; padding: 10px 0; cursor: pointer; transition: 0.3s; }
+        .sidebar-accordion-menu:hover { padding-left: 5px; color: var(--salmon-pink); }
+        .content-section { animation: fadeIn 0.4s ease; display: none; } 
+        #section-market { display: block; } 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Стили для поиска и фильтра */
+        .filter-popup {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border: 1px solid #eee;
+        }
+
+        /* Сообщения */
+        .msg { padding: 8px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; }
+        .msg.sent { align-self: flex-end; background: #ff6b6b; color: white; }
+        .msg.received { align-self: flex-start; background: #eee; color: #333; }
+    </style>
+    
+</head>
+<body>
+
+    <header>
+        <div class="header-main">
+            <div class="container">
+                <a href="javascript:void(0)" class="header-logo" onclick="showSection('market')">
+                    <h1 style="color: var(--eerie-black);">Uni<span style="color: #ff6b6b;">Market</span></h1>
+                </a>
+
+                <div class="header-search-container" style="position: relative; overflow: visible;">
+                    <input type="search" id="search-input" class="search-field" placeholder="Поиск по марке..." oninput="filterCars()">
+                    
+                    <button class="search-btn" onclick="toggleFilterPopup(event)" style="right: 45px; background: none; color: var(--sonic-silver);">
+                        <ion-icon name="options-outline"></ion-icon>
+                    </button>
+                    
+                    <button class="search-btn"><ion-icon name="search-outline"></ion-icon></button>
+
+                    <div id="filter-popup" class="filter-popup">
+                        <p style="font-size: 13px; margin-bottom: 10px; font-weight: bold;">Диапазон цены ($):</p>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="min-price" class="search-field" placeholder="От" oninput="filterCars()" style="margin: 0;">
+                            <input type="number" id="max-price" class="search-field" placeholder="До" oninput="filterCars()" style="margin: 0;">
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="header-user-actions">
+                    <button id="btn-cart" class="action-btn" onclick="showSection('cart')" title="Корзина">
+                        <ion-icon name="cart-outline"></ion-icon>
+                        <span class="count" id="cart-count">0</span>
+                    </button>
+                    <div style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+                        <button id="lang-ru" class="action-btn" title="Русский" style="width:28px;height:28px;padding:0;font-size:11px;border-radius:6px;display:flex;align-items:center;justify-content:center;">RU</button>
+                        <button id="lang-en" class="action-btn" title="English" style="width:28px;height:28px;padding:0;font-size:11px;border-radius:6px;display:flex;align-items:center;justify-content:center;">EN</button>
+                    </div>
+                    <div style="position:relative; display:flex; align-items:center; gap:8px;">
+                        <button id="header-avatar" class="action-btn" aria-haspopup="true" aria-expanded="false" title="Профиль" style="width:32px;height:32px;border-radius:50%;overflow:hidden;display:none;padding:0;background-size:cover;align-items:center;justify-content:center;border:none;">
+                            <span id="header-avatar-initial" style="display:inline-block;width:100%;height:100%;background:var(--salmon-pink);color:white;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:12px;">U</span>
+                        </button>
+                        <div id="avatar-menu" class="avatar-menu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #eee;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:160px;z-index:200;padding:6px;">
+                            <button class="sidebar-accordion-menu" style="width:100%;text-align:left;padding:10px;border:none;background:none;cursor:pointer;" onclick="showSection('profile'); toggleAvatarMenu(false);">Профиль</button>
+                            <button class="sidebar-accordion-menu" style="width:100%;text-align:left;padding:10px;border:none;background:none;cursor:pointer;" onclick="showSection('my-ads'); toggleAvatarMenu(false);">Мои объявления</button>
+                            <button class="sidebar-accordion-menu" style="width:100%;text-align:left;padding:10px;border:none;background:none;cursor:pointer;" onclick="showSection('cart'); toggleAvatarMenu(false);">Мой гараж</button>
+                            <div style="height:1px;background:#f3f3f3;margin:6px 0;border-radius:2px;"></div>
+                            <button class="sidebar-accordion-menu" style="width:100%;text-align:left;padding:10px;border:none;background:none;color:#ff4d4d;cursor:pointer;" onclick="toggleAvatarMenu(false); logout();">Выйти</button>
+                        </div>
+                        <button class="action-btn" id="legacy-logout" style="display:none;" onclick="logout()" title="Выйти"><ion-icon name="log-out-outline"></ion-icon></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="product-container">
+            <div class="container">
+                
+                <div class="sidebar has-scrollbar">
+            <div class="sidebar-category">
+                <div class="sidebar-top"><h2 id="title-navigation" class="sidebar-title">Навигация</h2></div>
+                        <ul class="sidebar-menu-category-list">
+                            <li class="sidebar-menu-category">
+                                <button class="sidebar-accordion-menu" onclick="showSection('market')">
+                                    <div class="menu-title-flex"><ion-icon name="grid-outline"></ion-icon><p class="menu-title">Главная</p></div>
+                                </button>
+                            </li>
+                            <li class="sidebar-menu-category">
+                                <button class="sidebar-accordion-menu" onclick="showSection('profile')">
+                                    <div class="menu-title-flex"><ion-icon name="person-outline"></ion-icon><p class="menu-title">Профиль</p></div>
+                                </button>
+                            </li>
+                            <li class="sidebar-menu-category">
+                                <button class="sidebar-accordion-menu" onclick="showSection('my-ads')">
+                                    <div class="menu-title-flex"><ion-icon name="megaphone-outline"></ion-icon><p class="menu-title">Мои объявления</p></div>
+                                </button>
+                            </li>
+                            <li class="sidebar-menu-category">
+                                <button class="sidebar-accordion-menu" onclick="showSection('favorites')">
+                                    <div class="menu-title-flex"><ion-icon name="heart-outline"></ion-icon><p class="menu-title">Избранное</p></div>
+                                </button>
+                            </li>
+                            <li class="sidebar-menu-category">
+                                <button class="sidebar-accordion-menu" onclick="showSection('messages')">
+                                    <div class="menu-title-flex"><ion-icon name="chatbubbles-outline"></ion-icon><p class="menu-title">Сообщения</p></div>
+                                </button>
+                            </li>
+                            <li class="sidebar-menu-category" id="nav-admin" style="display:none;">
+                                <button class="sidebar-accordion-menu" onclick="showSection('admin')">
+                                    <div class="menu-title-flex"><ion-icon name="settings-outline"></ion-icon><p class="menu-title">Администрирование</p></div>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="product-main">
+                    
+                    <div id="section-market" class="content-section">
+                        <h2 id="title-market" class="title">Актуальные предложения</h2>
+                        <div class="product-grid" id="cars-list"></div>
+                    </div>
+
+                    <div id="section-my-ads" class="content-section">
+                        <h2 id="title-my-ads" class="title">Управление объявлениями</h2>
+                        <div class="sidebar-category" style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <h3 style="margin-bottom: 15px;">Выставить авто на продажу</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <input type="text" id="brand" class="search-field" placeholder="Марка">
+                                <input type="text" id="model" class="search-field" placeholder="Модель">
+                                <input type="number" id="year" class="search-field" placeholder="Год выпуска">
+                                <input type="number" id="price" class="search-field" placeholder="Цена ($)">
+                                <div style="grid-column: span 2;">
+                                    <label style="font-size: 12px; color: gray; display: block; margin-bottom: 5px;">Фотография автомобиля:</label>
+                                    <input type="file" id="car-image" class="search-field" accept="image/*">
+                                </div>
+                            </div>
+                            <button id="btn-publish" class="btn-submit" onclick="addCar()" style="margin-top: 15px; width: auto; padding: 12px 40px;">Опубликовать</button>
+                        </div>
+                        <h3 class="title" style="font-size: 18px;">Мои активные объявления</h3>
+                        <div class="product-grid" id="my-cars-list"></div>
+                    </div>
+
+                    <div id="section-profile" class="content-section">
+                        <h2 id="title-profile" class="title">Личные данные</h2>
+                        <div class="sidebar-category" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 25px;">
+                                <div id="user-avatar" style="width: 80px; height: 80px; background: var(--salmon-pink); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; background-size: cover;">U</div>
+                                <div>
+                                    <h3 id="display-username" style="font-size: 22px; color: var(--eerie-black);">Загрузка...</h3>
+                                    <button onclick="document.getElementById('avatar-upload').click()" style="background: none; border: none; color: var(--salmon-pink); cursor: pointer; font-size: 12px;">Изменить фото</button>
+                                    <input type="file" id="avatar-upload" style="display: none;" onchange="handleAvatarUpload(event)">
+                                </div>
+                            </div>
+                            <div class="form-group"><label>Имя пользователя</label><input type="text" id="edit-username" class="search-field"></div>
+                            <div class="form-group"><label>Email</label><input type="email" id="edit-email" class="search-field"></div>
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button id="btn-save-profile" class="btn-submit" onclick="updateProfile()" style="background: #2b786a;">Сохранить</button>
+                                <button class="btn-submit" onclick="logout()" style="background: #ff4d4d;">Выйти</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="section-favorites" class="content-section">
+                        <h2 id="title-favorites" class="title">Избранные авто</h2>
+                        <div class="product-grid" id="favorites-list"></div>
+                    </div>
+
+                    <div id="section-cart" class="content-section">
+                        <h2 id="title-cart" class="title">Мой Гараж</h2>
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <div id="cart-list"></div>
+                            <div style="margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; text-align: right;">
+                                <h3>Итого: <span id="cart-total" style="color: #ff6b6b;">$0</span></h3>
+                                <button id="btn-checkout" class="btn-submit" style="width: 200px; margin-top: 10px;" onclick="checkout()">Оформить покупку</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="section-messages" class="content-section">
+                        <h2 id="title-messages" class="title">Мои диалоги</h2>
+                        <div class="messenger-container" style="display: flex; background: white; border-radius: 12px; height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden;">
+                            <div class="chat-list" style="width: 30%; border-right: 1px solid #eee; overflow-y: auto;">
+                                <div class="chat-item active" style="padding: 15px; border-bottom: 1px solid #f9f9f9; cursor: pointer; background: #fff5f5;">
+                                    <h4 style="font-size: 14px; margin-bottom: 5px;">Поддержка UniMarket</h4>
+                                    <p style="font-size: 12px; color: #888;">Здравствуйте!</p>
+                                </div>
+                            </div>
+                            <div class="chat-window" style="width: 70%; display: flex; flex-direction: column;">
+                                <div class="chat-header" style="padding: 15px; border-bottom: 1px solid #eee; font-weight: bold;">Чат с Поддержкой</div>
+                                <div id="chat-messages" style="flex-grow: 1; padding: 20px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 10px;"></div>
+                                <div class="chat-input-area" style="padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px;">
+                                    <input type="text" id="msg-input" class="search-field" placeholder="Введите сообщение..." style="margin: 0;" onkeydown="if(event.key==='Enter'){event.preventDefault(); sendSocketMessage();}">
+                                    <button type="button" class="btn-submit" onclick="sendSocketMessage()" style="width: 100px; margin: 0;">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="section-admin" class="content-section">
+                        <h2 class="title">Панель администратора</h2>
+                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <h3>Пользователи</h3>
+                            <div id="admin-users-list" style="margin-bottom:20px;"></div>
+                            <h3>Все сообщения</h3>
+                            <div id="admin-messages-list" style="max-height:300px; overflow:auto; border-top:1px solid #eee; padding-top:10px;"></div>
+                            <h3 style="margin-top: 20px;">Аналитика</h3>
+                            <div id="admin-reports" style="margin-top: 10px;"></div>
+                        </div>
+                    </div>
+
+                </div> 
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script>
+        // Логика для WebSocket чата
+        const chatBox = document.getElementById('chat-messages');
+        const myUsername = localStorage.getItem('username') || 'Гость';
+
+        // Определяем протокол (ws или wss для https) и хост автоматически
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        // Если мы на localhost, используем порт 8000, иначе стандартный порт домена
+        const host = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'localhost:8000' : window.location.host;
+        
+        const ws = new WebSocket(`${protocol}//${host}/ws/${myUsername}`);
+
+        ws.onopen = () => console.log('Подключено к WebSocket серверу');
+        
+        ws.onmessage = (event) => {
+            const text = event.data;
+            // Проверяем, наше ли это сообщение (для стилизации)
+            const isMe = text.startsWith(myUsername + ':');
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg ' + (isMe ? 'sent' : 'received');
+            msgDiv.textContent = text;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+
+        ws.onerror = (error) => console.error('Ошибка WebSocket:', error);
+
+        async function sendSocketMessage() {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            // 1. Сохраняем сообщение в базу данных через API (чтобы не пропадало)
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    await fetch(`${API_URL}/support/messages/`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ content: text })
+                    });
+                } catch (e) {
+                    console.error('Ошибка сохранения сообщения:', e);
+                }
+            }
+
+            // Отправляем только текст, сервер Python сам добавит имя
+            ws.send(text);
+            
+            input.value = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>UniMarket - Login</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Login</h2>
+        <form onsubmit="handleLogin(event)">
+    <div class="user-box">
+        <input type="text" id="username" name="username" required />
+        <label>User name</label>
+    </div>
+    <div class="user-box">
+        <input type="password" id="password" name="password" required />
+        <label>Password</label>
+    </div>
+    <a href="javascript:void(0)" onclick="handleLogin(event)" style="display: block; margin-bottom: 20px;">
+        <span></span><span></span><span></span><span></span>
+        LOGIN
+    </a>
+
+    <a href="javascript:void(0)" onclick="handleRegister(event)" style="font-size: 12px; color: #03e9f4; text-align: center; display: block;">
+        REGISTER
+    </a>
+</form>
+    </div>
+    <script src="script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
