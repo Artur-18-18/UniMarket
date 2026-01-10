@@ -10,3 +10,4 @@ email-validator
 httpx
 passlib[bcrypt]
 python-jose[cryptography]
+pydantic-settings
