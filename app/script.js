@@ -127,6 +127,7 @@ async function checkAuth() {
             if (editE) editE.value = currentUser.email || '';
             if (avatarEl && currentUser.avatar_url) {
                 const url = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
+                const url = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                 avatarEl.style.backgroundImage = `url('${url}')`;
                 avatarEl.style.backgroundSize = 'cover';
                 avatarEl.innerText = '';
@@ -140,6 +141,7 @@ async function checkAuth() {
                 headerAvatar.onclick = (e) => { e.stopPropagation(); toggleAvatarMenu(); };
                 if (currentUser.avatar_url) {
                     const hurl = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
+                    const hurl = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                     headerAvatar.style.backgroundImage = `url('${hurl}')`;
                     headerAvatar.style.backgroundSize = 'cover';
                     if (headerInitial) headerInitial.style.display = 'none';
@@ -287,6 +289,7 @@ function renderCarsList(cars, containerId) {
         
         // Формируем корректный URL картинки
         const imgUrl = car.image_url.startsWith('http') ? car.image_url : `${API_URL}/${car.image_url}`;
+        const imgUrl = (car.image_url.startsWith('http') || car.image_url.startsWith('data:')) ? car.image_url : `${API_URL}/${car.image_url}`;
 
         return `
             <div class="showcase">
@@ -703,6 +706,7 @@ window.handleAvatarUpload = async function(event) {
             const data = await res.json();
             const avatarEl = document.getElementById('user-avatar');
             const url = data.avatar_url.startsWith('http') ? data.avatar_url : `${API_URL}${data.avatar_url.startsWith('/') ? '' : '/'}${data.avatar_url}`;
+            const url = (data.avatar_url.startsWith('http') || data.avatar_url.startsWith('data:')) ? data.avatar_url : `${API_URL}${data.avatar_url.startsWith('/') ? '' : '/'}${data.avatar_url}`;
             if (avatarEl) {
                 avatarEl.style.backgroundImage = `url('${url}')`;
                 avatarEl.style.backgroundSize = 'cover';
@@ -732,6 +736,7 @@ function populateProfileFields() {
     if (editE) editE.value = currentUser.email || '';
     if (avatarEl && currentUser.avatar_url) {
         const url = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
+        const url = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
         avatarEl.style.backgroundImage = `url('${url}')`;
         avatarEl.style.backgroundSize = 'cover';
         avatarEl.innerText = '';
