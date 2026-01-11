@@ -1,6 +1,7 @@
 import os, shutil, uuid
 from fastapi import FastAPI, Depends, HTTPException, Form, UploadFile, File, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -37,6 +38,32 @@ os.makedirs("uploads", exist_ok=True)
 os.makedirs("static/avatars", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# --- FRONTEND ---
+@app.get("/")
+async def read_root():
+    return FileResponse("app/index.html")
+
+@app.get("/index.html")
+async def read_index():
+    return FileResponse("app/index.html")
+
+@app.get("/cars.html")
+async def read_cars_page():
+    return FileResponse("app/cars.html")
+
+@app.get("/script.js")
+async def read_script_js():
+    return FileResponse("app/script.js")
+
+@app.get("/style.css")
+async def read_style_css():
+    if os.path.exists("app/style.css"):
+        return FileResponse("app/style.css")
+    raise HTTPException(status_code=404)
+
+if os.path.exists("app/assets"):
+    app.mount("/assets", StaticFiles(directory="app/assets"), name="assets")
 
 # --- AUTH ---
 @app.post("/auth/register")
