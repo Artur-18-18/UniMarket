@@ -126,7 +126,6 @@ async function checkAuth() {
             if (editU) editU.value = currentUser.username || '';
             if (editE) editE.value = currentUser.email || '';
             if (avatarEl && currentUser.avatar_url) {
-                const url = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                 const url = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                 avatarEl.style.backgroundImage = `url('${url}')`;
                 avatarEl.style.backgroundSize = 'cover';
@@ -140,7 +139,6 @@ async function checkAuth() {
                 // toggle dropdown menu on click
                 headerAvatar.onclick = (e) => { e.stopPropagation(); toggleAvatarMenu(); };
                 if (currentUser.avatar_url) {
-                    const hurl = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                     const hurl = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
                     headerAvatar.style.backgroundImage = `url('${hurl}')`;
                     headerAvatar.style.backgroundSize = 'cover';
@@ -288,7 +286,6 @@ function renderCarsList(cars, containerId) {
         const isOwner = (currentUser && car.owner_id === currentUser.id);
         
         // Формируем корректный URL картинки
-        const imgUrl = car.image_url.startsWith('http') ? car.image_url : `${API_URL}/${car.image_url}`;
         const imgUrl = (car.image_url.startsWith('http') || car.image_url.startsWith('data:')) ? car.image_url : `${API_URL}/${car.image_url}`;
 
         return `
@@ -705,7 +702,6 @@ window.handleAvatarUpload = async function(event) {
         if (res.ok) {
             const data = await res.json();
             const avatarEl = document.getElementById('user-avatar');
-            const url = data.avatar_url.startsWith('http') ? data.avatar_url : `${API_URL}${data.avatar_url.startsWith('/') ? '' : '/'}${data.avatar_url}`;
             const url = (data.avatar_url.startsWith('http') || data.avatar_url.startsWith('data:')) ? data.avatar_url : `${API_URL}${data.avatar_url.startsWith('/') ? '' : '/'}${data.avatar_url}`;
             if (avatarEl) {
                 avatarEl.style.backgroundImage = `url('${url}')`;
@@ -735,7 +731,6 @@ function populateProfileFields() {
     if (editU) editU.value = currentUser.username || '';
     if (editE) editE.value = currentUser.email || '';
     if (avatarEl && currentUser.avatar_url) {
-        const url = currentUser.avatar_url.startsWith('http') ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
         const url = (currentUser.avatar_url.startsWith('http') || currentUser.avatar_url.startsWith('data:')) ? currentUser.avatar_url : `${API_URL}${currentUser.avatar_url.startsWith('/') ? '' : '/'}${currentUser.avatar_url}`;
         avatarEl.style.backgroundImage = `url('${url}')`;
         avatarEl.style.backgroundSize = 'cover';
