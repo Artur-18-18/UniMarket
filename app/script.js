@@ -284,12 +284,15 @@ function renderCarsList(cars, containerId) {
         const isFav = favorites.some(f => f.id === car.id);
         const isMyAdsView = (containerId === 'my-cars-list');
         const isOwner = (currentUser && car.owner_id === currentUser.id);
+        
+        // Формируем корректный URL картинки
+        const imgUrl = car.image_url.startsWith('http') ? car.image_url : `${API_URL}/${car.image_url}`;
 
         return `
             <div class="showcase">
                 <div class="showcase-banner" style="position:relative; height:160px; overflow:hidden;">
-                    <img class="product-img default" src="${API_URL}/${car.image_url}" alt="${escapeHtml(car.model)}">
-                    <img class="product-img hover" src="${API_URL}/${car.image_url}" alt="${escapeHtml(car.model)}">
+                    <img class="product-img default" src="${imgUrl}" alt="${escapeHtml(car.model)}" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+                    <img class="product-img hover" src="${imgUrl}" alt="${escapeHtml(car.model)}" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
                     <button onclick="toggleFavorite(${car.id})" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index:4;">
                         <ion-icon name="${isFav ? 'heart' : 'heart-outline'}" style="color: ${isFav ? 'red' : 'black'}"></ion-icon>
                     </button>

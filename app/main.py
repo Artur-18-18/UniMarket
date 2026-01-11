@@ -1,4 +1,5 @@
 import os, shutil, uuid
+import base64
 from fastapi import FastAPI, Depends, HTTPException, Form, UploadFile, File, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -18,6 +19,7 @@ from app.schemas.user import UserUpdateSchema
 from app.schemas.message import MessageCreate, MessageOut
 from app.core.security import verify_password, get_password_hash, create_access_token
 from app.core.auth import get_current_user
+from app.core.config import settings
 from typing import Optional
 
 # Создаем таблицы (импорт моделей выше гарантирует регистрацию метаданных)
@@ -123,17 +125,14 @@ async def create_car(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Сохранение фото машины
-    file_ext = Path(file.filename).suffix
-    file_name = f"{uuid.uuid4()}{file_ext}"
-    file_path = f"uploads/{file_name}"
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    # Читаем файл и кодируем его в Base64 (храним прямо в БД)
+    file_content = await file.read()
+    encoded_string = base64.b64encode(file_content).decode("utf-8")
+    image_data_url = f"data:{file.content_type};base64,{encoded_string}"
 
     new_car = Car(
         brand=brand, model=model, price=price, year=year,
-        image_url=file_path, owner_id=current_user.id
+        image_url=image_data_url, owner_id=current_user.id
     )
     db.add(new_car)
     db.commit()
@@ -157,17 +156,14 @@ def list_cars(db: Session = Depends(get_db)):
 # --- AVATAR ---
 @app.post("/auth/avatar")
 async def upload_avatar(file: UploadFile = File(...), current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    ext = Path(file.filename).suffix
-    filename = f"avatar_{current_user.id}{ext}"
-    path = f"static/avatars/{filename}"
+    # Кодируем аватар в Base64
+    file_content = await file.read()
+    encoded_string = base64.b64encode(file_content).decode("utf-8")
+    image_data_url = f"data:{file.content_type};base64,{encoded_string}"
     
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    
-    current_user.avatar_url = path
+    current_user.avatar_url = image_data_url
     db.commit()
-    # Return web-accessible path starting with slash so frontend can load it as /static/...
-    return {"avatar_url": f"/{path}"}
+    return {"avatar_url": image_data_url}
 
 # --- MESSAGES / SUPPORT ---
 @app.post("/support/messages/", response_model=MessageOut)
