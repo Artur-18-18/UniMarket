@@ -42,6 +42,68 @@
         .msg { padding: 8px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; }
         .msg.sent { align-self: flex-end; background: #ff6b6b; color: white; }
         .msg.received { align-self: flex-start; background: #eee; color: #333; }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            /* Шапка */
+            .header-main .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .header-search-container {
+                width: 100%;
+                margin: 0;
+            }
+            .header-user-actions {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 5px;
+            }
+
+            /* Основной контейнер: убираем боковую панель наверх */
+            .product-container .container {
+                display: flex;
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+            
+            /* Навигация: горизонтальный скролл */
+            .sidebar-menu-category-list {
+                display: flex;
+                overflow-x: auto;
+                gap: 10px;
+                padding-bottom: 5px;
+            }
+            .sidebar-menu-category {
+                min-width: 140px;
+                background: #f9f9f9;
+                border-radius: 8px;
+                border: 1px solid #eee;
+            }
+            .sidebar-title { display: none; } /* Скрываем заголовок "Навигация" */
+
+            /* Сетка товаров: 1 колонка */
+            .product-grid {
+                display: grid;
+                grid-template-columns: 1fr !important;
+                gap: 15px;
+            }
+            .product-main { width: 100%; }
+
+            /* Формы и чат */
+            #section-my-ads .sidebar-category > div { grid-template-columns: 1fr !important; }
+            #section-my-ads .sidebar-category > div > div[style*="span 2"] { grid-column: span 1 !important; }
+            
+            .messenger-container { flex-direction: column; height: auto; }
+            .chat-list { width: 100% !important; height: 120px; border-right: none; border-bottom: 1px solid #eee; }
+            .chat-window { width: 100% !important; height: 400px; }
+            .filter-popup { width: 100%; left: 0; }
+        }
     </style>
     
 </head>
