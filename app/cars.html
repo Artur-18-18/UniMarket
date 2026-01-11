@@ -43,21 +43,35 @@
         .msg.sent { align-self: flex-end; background: #ff6b6b; color: white; }
         .msg.received { align-self: flex-start; background: #eee; color: #333; }
 
+        /* Mobile Menu Elements */
+        .mobile-menu-btn { display: none; font-size: 28px; background: none; border: none; cursor: pointer; color: var(--eerie-black); padding: 0; margin-right: 10px; }
+        .mobile-menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1900; opacity: 0; transition: opacity 0.3s; }
+        .mobile-menu-overlay.active { display: block; opacity: 1; }
+        
+        /* Close button inside sidebar */
+        .sidebar-close-btn { display: none; position: absolute; top: 15px; right: 15px; font-size: 24px; background: none; border: none; cursor: pointer; }
+
         /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 768px) {
             /* Шапка */
             .header-main .container {
-                flex-direction: column;
-                gap: 15px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 10px;
             }
+            .mobile-menu-btn { display: block; }
+            .header-logo { margin-right: auto; }
+            
             .header-search-container {
                 width: 100%;
-                margin: 0;
+                margin: 5px 0 0 0;
+                order: 3; /* Поиск переносим на вторую строку */
             }
             .header-user-actions {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 5px;
+                width: auto;
+                margin-top: 0;
+                gap: 10px;
             }
 
             /* Основной контейнер: убираем боковую панель наверх */
@@ -65,27 +79,38 @@
                 display: flex;
                 flex-direction: column;
             }
-            .sidebar {
-                width: 100%;
-                margin-bottom: 20px;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-            }
             
-            /* Навигация: горизонтальный скролл */
+            /* Sidebar as Drawer (Выезжающее меню) */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%; /* Скрыто за экраном */
+                width: 280px;
+                height: 100vh;
+                background: white;
+                z-index: 2000;
+                transition: 0.3s ease;
+                padding: 20px;
+                box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+                overflow-y: auto;
+            }
+            .sidebar.active { left: 0; }
+            .sidebar-close-btn { display: block; }
+            
+            /* Возвращаем вертикальный список для меню */
             .sidebar-menu-category-list {
-                display: flex;
-                overflow-x: auto;
-                gap: 10px;
-                padding-bottom: 5px;
+                display: block;
+                overflow-x: visible;
+                gap: 0;
             }
             .sidebar-menu-category {
-                min-width: 140px;
-                background: #f9f9f9;
-                border-radius: 8px;
-                border: 1px solid #eee;
+                min-width: auto;
+                background: none;
+                border: none;
+                border-bottom: 1px solid #f1f1f1;
+                border-radius: 0;
             }
-            .sidebar-title { display: none; } /* Скрываем заголовок "Навигация" */
+            .sidebar-title { display: block; margin-top: 10px; margin-bottom: 20px; }
 
             /* Сетка товаров: 1 колонка */
             .product-grid {
@@ -112,6 +137,11 @@
     <header>
         <div class="header-main">
             <div class="container">
+                <!-- Кнопка гамбургер-меню -->
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </button>
+
                 <a href="javascript:void(0)" class="header-logo" onclick="showSection('market')">
                     <h1 style="color: var(--eerie-black);">Uni<span style="color: #ff6b6b;">Market</span></h1>
                 </a>
@@ -161,11 +191,15 @@
         </div>
     </header>
 
+    <!-- Затемнение фона при открытом меню -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+
     <main>
         <div class="product-container">
             <div class="container">
                 
-                <div class="sidebar has-scrollbar">
+                <div class="sidebar has-scrollbar" id="sidebar-menu">
+            <button class="sidebar-close-btn" onclick="toggleMobileMenu()"><ion-icon name="close-outline"></ion-icon></button>
             <div class="sidebar-category">
                 <div class="sidebar-top"><h2 id="title-navigation" class="sidebar-title">Навигация</h2></div>
                         <ul class="sidebar-menu-category-list">
@@ -307,6 +341,14 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script>
+        // Функция для открытия/закрытия мобильного меню
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
         // Логика для WebSocket чата
         const chatBox = document.getElementById('chat-messages');
         const myUsername = localStorage.getItem('username') || 'Гость';
