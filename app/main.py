@@ -300,7 +300,7 @@ def create_order(payload: OrderCreate, background_tasks: BackgroundTasks, db: Se
         purchases.append(p)
         purchased_titles.append(f"{car.brand} {car.model}")
 
-    # Добавляем фоновые задачи, если покупка состоялась
+    
     if purchases:
         # 1. Отправка уведомления покупателю
         msg = f"Поздравляем с покупкой! Ваши авто: {', '.join(purchased_titles)}"
