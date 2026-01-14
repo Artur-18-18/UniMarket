@@ -133,7 +133,7 @@
     </style>
     
 </head>
-<body>
+<body class="app-body">
 
     <header>
         <div class="header-main">
@@ -144,7 +144,7 @@
                 </button>
 
                 <a href="javascript:void(0)" class="header-logo" onclick="showSection('market')">
-                    <h1 style="color: var(--eerie-black);">Uni<span style="color: #ff6b6b;">Market</span></h1>
+                    <h1>Uni<span style="color: #ff6b6b;">Market</span></h1>
                 </a>
 
                 <div class="header-search-container" style="position: relative; overflow: visible;">
@@ -247,7 +247,7 @@
 
                     <div id="section-my-ads" class="content-section">
                         <h2 id="title-my-ads" class="title">Управление объявлениями</h2>
-                        <div class="sidebar-category" style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                        <div class="sidebar-category content-box" style="margin-bottom: 30px;">
                             <h3 style="margin-bottom: 15px;">Выставить авто на продажу</h3>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <input type="text" id="brand" class="search-field" placeholder="Марка">
@@ -267,7 +267,7 @@
 
                     <div id="section-profile" class="content-section">
                         <h2 id="title-profile" class="title">Личные данные</h2>
-                        <div class="sidebar-category" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                        <div class="sidebar-category content-box">
                             <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 25px;">
                                 <div id="user-avatar" style="width: 80px; height: 80px; background: var(--salmon-pink); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; background-size: cover;">U</div>
                                 <div>
@@ -292,7 +292,7 @@
 
                     <div id="section-cart" class="content-section">
                         <h2 id="title-cart" class="title">Мой Гараж</h2>
-                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                        <div class="content-box">
                             <div id="cart-list"></div>
                             <div class="cart-footer">
                                 <h3>Итого: <span id="cart-total" style="color: #ff6b6b;">$0</span></h3>
@@ -305,7 +305,7 @@
 
                     <div id="section-messages" class="content-section">
                         <h2 id="title-messages" class="title">Мои диалоги</h2>
-                        <div class="messenger-container" style="display: flex; background: white; border-radius: 12px; height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden;">
+                        <div class="messenger-container content-box" style="display: flex; height: 500px; overflow: hidden; padding: 0;">
                             <div class="chat-list" style="width: 30%; border-right: 1px solid #eee; overflow-y: auto;">
                                 <div class="chat-item active" style="padding: 15px; border-bottom: 1px solid #f9f9f9; cursor: pointer; background: #fff5f5;">
                                     <h4 style="font-size: 14px; margin-bottom: 5px;">Поддержка UniMarket</h4>
@@ -325,7 +325,7 @@
 
                     <div id="section-admin" class="content-section">
                         <h2 class="title">Панель администратора</h2>
-                        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                        <div class="content-box">
                             <h3>Пользователи</h3>
                             <div id="admin-users-list" style="margin-bottom:20px;"></div>
                             <h3>Все сообщения</h3>
