@@ -10,7 +10,8 @@ body {
 
 /* Белый фон для приложения на ПК */
 body.app-body {
-    background: #f8f9fa; /* Светлый фон, чтобы выделялись карточки */
+    background: #f8f9fa !important; /* Принудительно белый цвет */
+    background-image: none !important; /* Убираем синий градиент */
     color: #333;
 }
 
