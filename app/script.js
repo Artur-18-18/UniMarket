@@ -427,7 +427,13 @@ function addToCart(id) {
 
 function updateCartBadge() { 
     const badge = document.getElementById('cart-count');
-    if (badge) badge.innerText = cart.length; 
+    if (badge) {
+        badge.innerText = cart.length;
+        // Анимация увеличения для привлечения внимания
+        badge.style.transition = "transform 0.2s";
+        badge.style.transform = "scale(1.5)";
+        setTimeout(() => badge.style.transform = "scale(1)", 200);
+    } 
 }
 
 function renderCart() {
