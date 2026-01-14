@@ -254,5 +254,54 @@ body {
     body {
         padding-bottom: 80px; 
     }
+
+    /* Адаптация кнопок в корзине для мобильных */
+    .cart-footer {
+        align-items: stretch !important;
+        text-align: center;
+    }
+
+    .cart-buttons-container {
+        flex-direction: column-reverse; /* Кнопка покупки сверху */
+        width: 100%;
+    }
+
+    #btn-checkout, #btn-clear-cart {
+        width: 100% !important;
+        margin: 5px 0;
+        padding: 15px !important; /* Удобнее нажимать пальцем */
+    }
+}
+
+/* Кнопка отмены/очистки корзины */
+#btn-clear-cart {
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Стили для подвала корзины (ПК) */
+.cart-footer {
+    margin-top: 20px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.cart-buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
+/* На ПК кнопки не должны быть на всю ширину */
+#btn-checkout, #btn-clear-cart {
+    width: auto !important;
+    min-width: 150px;
 }
  

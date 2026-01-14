@@ -7,6 +7,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="assets/css/style-prefix.css">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .sidebar-form { padding: 20px 0; border-top: 1px solid var(--cultured); margin-top: 20px; }
@@ -293,9 +294,11 @@
                         <h2 id="title-cart" class="title">Мой Гараж</h2>
                         <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
                             <div id="cart-list"></div>
-                            <div style="margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; text-align: right;">
+                            <div class="cart-footer">
                                 <h3>Итого: <span id="cart-total" style="color: #ff6b6b;">$0</span></h3>
-                                <button id="btn-checkout" class="btn-submit" style="width: 200px; margin-top: 10px;" onclick="checkout()">Оформить покупку</button>
+                                <div class="cart-buttons-container">
+                                    <button id="btn-checkout" class="btn-submit" onclick="checkout()">Оформить покупку</button>
+                                </div>
                             </div>
                         </div>
                     </div>

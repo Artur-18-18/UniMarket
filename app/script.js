@@ -15,6 +15,18 @@ let currentUser = null;
 // ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Приложение запущено...");
+    
+    // Вставляем кнопку "Отменить" рядом с "Оформить покупку"
+    const checkoutBtn = document.getElementById('btn-checkout');
+    if (checkoutBtn && !document.getElementById('btn-clear-cart')) {
+        const clearBtn = document.createElement('button');
+        clearBtn.id = 'btn-clear-cart';
+        clearBtn.className = 'btn-submit'; // Используем тот же класс для базовых стилей
+        clearBtn.onclick = clearCart;
+        // Вставляем ПЕРЕД кнопкой оформления
+        checkoutBtn.parentNode.insertBefore(clearBtn, checkoutBtn);
+    }
+
     await checkAuth(); // Сначала узнаем кто зашел
     applyLanguage(); // apply saved language
     await loadCars();  // Потом загружаем данные
@@ -36,7 +48,7 @@ const TRANSLATIONS = {
             navigation: 'Навигация'
         },
         placeholders: { search: 'Поиск по марке...' },
-        buttons: { publish: 'Опубликовать', save: 'Сохранить', checkout: 'Оформить покупку', cart: 'Корзина' }
+        buttons: { publish: 'Опубликовать', save: 'Сохранить', checkout: 'Оформить покупку', cart: 'Корзина', cancel: 'Отменить' }
     },
     en: {
         menu: ['Home','Profile','My ads','Favorites','Messages'],
@@ -50,7 +62,7 @@ const TRANSLATIONS = {
             navigation: 'Navigation'
         },
         placeholders: { search: 'Search by brand...' },
-        buttons: { publish: 'Publish', save: 'Save', checkout: 'Checkout', cart: 'Cart' }
+        buttons: { publish: 'Publish', save: 'Save', checkout: 'Checkout', cart: 'Cart', cancel: 'Cancel' }
     }
 };
 
@@ -82,6 +94,7 @@ function applyLanguage() {
     const bs = document.getElementById('btn-save-profile'); if (bs) bs.innerText = t.buttons.save;
     const bc = document.getElementById('btn-checkout'); if (bc) bc.innerText = t.buttons.checkout;
     const cartBtn = document.getElementById('btn-cart'); if (cartBtn) cartBtn.title = t.buttons.cart;
+    const bCancel = document.getElementById('btn-clear-cart'); if (bCancel) bCancel.innerText = t.buttons.cancel;
 }
 
 // attach language button events
@@ -494,6 +507,28 @@ function checkout() {
                 Swal.fire('Ошибка', txt.detail || 'Не удалось оформить покупку', 'error');
             }
         } catch (e) { console.error('checkout error', e); Swal.fire('Ошибка сети', 'Не удалось оформить покупку', 'error'); }
+    });
+}
+
+function clearCart() {
+    if (cart.length === 0) return;
+    
+    Swal.fire({
+        title: 'Очистить корзину?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff4d4d',
+        cancelButtonColor: '#666',
+        confirmButtonText: 'Да, удалить все',
+        cancelButtonText: 'Нет'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            cart = [];
+            localStorage.setItem('user_cart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCart();
+            Swal.fire('Корзина очищена', '', 'success');
+        }
     });
 }
 
